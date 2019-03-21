@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  
+  hangfire-db:
+    image: dwwx/sql-server:2017
+    environment:
+      - sa_password=DockerCon!!!
+    networks:
+      - app-net
+      
+  message-queue:
+    image: dwwx/message-queue
+    networks:
+      - app-net
+
+  scheduler-api:
+    image: sixeyed/petition-watcher-scheduler-api
+    ports:
+      - "8023:80"
+    environment: 
+      - ConnectionStrings:hangfire=Server=hangfire-db;User Id=sa;Password=DockerCon!!!
+    depends_on:
+      - hangfire-db
+      - message-queue
+    networks:
+      - app-net
+
+  index-handler:
+    image: sixeyed/petition-watcher-index-handler      
+    depends_on:
+      - elasticsearch
+      - message-queue
+    networks:
+      - app-net
+
+  elasticsearch:
+    image: sixeyed/elasticsearch:5.6.11-windowsservercore-ltsc2019
+    networks:
+      - app-net
+
+  kibana:
+    image: sixeyed/kibana:5.6.11-windowsservercore-ltsc2019
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    external:
+      name: nat
