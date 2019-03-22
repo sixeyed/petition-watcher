@@ -1,6 +1,6 @@
 # petition-watcher
 
-Simple collector which polls the JSON endpoiint for a UK government petition and stores the result in Elasticsearch for analysis in Kibana.
+Simple collector which polls the JSON endpoint for a UK government petition and stores the result in Elasticsearch for analysis in Kibana.
 
 Currently hard-coded to load [petition id 241584](https://petition.parliament.uk/petitions/241584) every minute.
 
